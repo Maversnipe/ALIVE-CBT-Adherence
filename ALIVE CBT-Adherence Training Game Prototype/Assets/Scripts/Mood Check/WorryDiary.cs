@@ -8,6 +8,7 @@ public class WorryDiary : MonoBehaviour, IMoodCheckActivity_Generic
 
     public QuestionAndResponse[] situationQuestions;
     public QuestionAndResponse[] challengeThoughtsQuestions;
+    public DialogueNode dialogueNode;
 
     public MoodCheckManager moodCheckManager;
     public Text question;
@@ -28,8 +29,19 @@ public class WorryDiary : MonoBehaviour, IMoodCheckActivity_Generic
 
         // Setting up Mood Diary Info 
         _worryDiaryInfo = new WorryDiaryInfo();
-        _worryDiaryInfo.Question_ChallengeThoughts = new string[challengeThoughtsQuestions.Length];
-        _worryDiaryInfo.Answer_ChallengeThoughts = new string[challengeThoughtsQuestions.Length];
+
+        DialogueNode tempNode = dialogueNode;
+        int CTQCount = 0;
+        while(tempNode != null)
+        {
+            if(tempNode.questionType == QuestionType.ChallengeThoughts)
+            {
+                CTQCount++;
+            }
+            tempNode = tempNode.nextNode;
+        }
+        _worryDiaryInfo.Question_ChallengeThoughts = new string[CTQCount];
+        _worryDiaryInfo.Answer_ChallengeThoughts = new string[CTQCount];
 
         QuestionGenerator();
     }

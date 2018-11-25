@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Dialogue_3
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  dialogueType: 1
+  questionType: 4
+  nextNode: {fileID: 11400000, guid: 05b89b9bee7a40b478655d7f41a8599b, type: 2}
+  prevNode: {fileID: 11400000, guid: b140451ad8ba02846b867ed606592dbc, type: 2}
+  content: Yes, these sound like possible outcomes that may come true.

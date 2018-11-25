@@ -291,30 +291,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   situationQuestions:
-  - Question: Can you share with me what you are worried about?
-    Response: Wow, that sounds worrying indeed.
-  challengeThoughtsQuestions:
-  - Question: What are you predicting?
-    Response: Yes, these sound like possible outcomes that may come true.
-  - Question: What is the evidence for your prediction?
+  - Question: 
     Response: 
-  - Question: What is the evidence against your prediction?
+  challengeThoughtsQuestions:
+  - Question: 
     Response: 
   - Question: 
-    Response: Think of a prediction that you had made in the past that did not come
-      true.
-  - Question: How likely is it that what you are predicting will actually happen?
-    Response: While many things may possibly happen, the probability of them happening
-      may be low.
-  - Question: What is the worst thing that could happen?
     Response: 
-  - Question: What is the best thing that could happen?
+  - Question: 
     Response: 
-  - Question: What is the most likely thing that will happen?
+  - Question: 
     Response: 
-  - Question: What encouraging or calming thought would you like to replace your worrying
-      thoughts with?
-    Response: Oh thats nice, repeat these thoughts to yourself!
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
+  dialogueNode: {fileID: 11400000, guid: a156dce12ac954b45b9b84a3ad93a90e, type: 2}
   moodCheckManager: {fileID: 384898103}
   question: {fileID: 745988462}
   answerInput: {fileID: 868957886}
@@ -3373,41 +3371,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   situationQuestions:
-  - Question: Can you share with me what happened that made you feel sad?
-    Response: I'm sorry to hear that. You must be really upset.
-  - Question: What upset you?
-    Response: I'm sorry to hear that. You must be really upset.
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
   physicalSensationQuestions:
-  - Question: What physical sensations did you notice in your body?
+  - Question: 
     Response: 
   unhelpfulThoughtsQuestions:
-  - Question: I see. Tell me what was going through your mind.
-    Response: That sounds overwhelming. Sometimes, our mind is not our friend and
-      may tell us things that may not be entirely true.
   - Question: 
-    Response: However, are you able to think of an alternative explanation?
+    Response: 
+  - Question: 
+    Response: 
   challengeThoughtsQuestionsYes:
   - Question: 
-    Response: So you see, what you think at the start may not be truly reflective
-      of the situation.
-  - Question: 
-    Response: There are more healpful ways of relooking at the situation.
-  - Question: What encouraging or calming thoughts would you like to replace your
-      sad thoughts with?
     Response: 
-  - Question: Keep repeating this to yourself. I hope you feel better!
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
+  - Question: 
     Response: 
   challengeThoughtsQuestionsNo:
-  - Question: While there may not be any other explanations, how does thinking this
-      way help you?
-    Response: 
-  - Question: I see. What is a more helpful way of looking at the situation?
-    Response: 
-  - Question: What encouraging or calming thoughts would you like to replace your
-      sad thoughts with?
+  - Question: 
     Response: 
   - Question: 
-    Response: Keep repeating this to yourself. I hope you feel better!
+    Response: 
+  - Question: 
+    Response: 
+  - Question: 
+    Response: 
   moodCheckManager: {fileID: 384898103}
   question: {fileID: 1748699010}
   answerInput: {fileID: 1868330302}
