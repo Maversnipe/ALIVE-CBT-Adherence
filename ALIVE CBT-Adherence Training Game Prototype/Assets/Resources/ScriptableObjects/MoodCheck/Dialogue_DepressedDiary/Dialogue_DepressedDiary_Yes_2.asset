@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d9a519d9d789f47859e2296655e419, type: 3}
+  m_Name: Dialogue_DepressedDiary_Yes_2
+  m_EditorClassIdentifier: 
+  dialogueType: 0
+  questionType: 4
+  nextNode: {fileID: 11400000, guid: d9a8becd3ce6fe9438e30d5357ba4402, type: 2}
+  prevNode: {fileID: 11400000, guid: ff34575e92347c4469e89af725639e27, type: 2}
+  content:
+  - What encouraging or calming thoughts would you like to replace your sad thoughts
+    with?

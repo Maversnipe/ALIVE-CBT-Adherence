@@ -5,45 +5,65 @@ using UnityEngine.UI;
 
 public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
 {
-
-    public QuestionAndResponse[] situationQuestions;
-    public QuestionAndResponse[] physicalSensationQuestions;
-    public QuestionAndResponse[] unhelpfulThoughtsQuestions;
-    public QuestionAndResponse[] challengeThoughtsQuestionsYes;
-    public QuestionAndResponse[] challengeThoughtsQuestionsNo;
+    public DialogueNode dialogueNode;
+    public DialogueNode dialogueNode_Last;
+    public DialogueNode dialogueNode_Yes;
+    public DialogueNode dialogueNode_No;
 
     public MoodCheckManager moodCheckManager;
     public Text question;
     public InputField answerInput;
     public GameObject YesNo;
-
-    private QuestionType questionType;
-    private int _challengeThoughtsQuestionsCount = 0;
-    private int _unhelpfulQuestionsCount = 0;
+    
     private MoodDiaryInfo _moodDiaryInfo;
-    private bool _isYes = false;
-    private bool _isQuestion = false;
-    private QuestionAndResponse _currentQnR;
+    private bool _isChallengingQuestions = false;
+    private DialogueNode _currDialogueNode;
+    private bool _yesNoSelected;
 
     // Use this for initialization
     void Start () {
-        // Set the question type to the first type, which is situation
-        questionType = QuestionType.Situation;
+        _moodDiaryInfo = new MoodDiaryInfo();
+
+        DialogueNode tempNode = dialogueNode_No;
+        int counter = 0;
+        while (tempNode != null)
+        {
+            if (tempNode.dialogueType == DialogueNode.DialogueType.Question)
+            {
+                counter++;
+            }
+            tempNode = tempNode.nextNode;
+        }
 
         // Setting up Mood Diary Info 
         _moodDiaryInfo = new MoodDiaryInfo();
-        _moodDiaryInfo.Question_ChallengeThoughts = new string[challengeThoughtsQuestionsYes.Length + challengeThoughtsQuestionsNo.Length];
-        _moodDiaryInfo.Answer_ChallengeThoughts = new string[challengeThoughtsQuestionsYes.Length + challengeThoughtsQuestionsNo.Length];
+        _moodDiaryInfo.Question_ChallengeThoughts = new string[counter];
+        _moodDiaryInfo.Answer_ChallengeThoughts = new string[counter];
 
-        _moodDiaryInfo.Question_UnhelpfulThoughts = new string[unhelpfulThoughtsQuestions.Length];
-        _moodDiaryInfo.Answer_UnhelpfulThoughts = new string[unhelpfulThoughtsQuestions.Length];
+        tempNode = dialogueNode;
+        counter = 0;
+        while (tempNode != null)
+        {
+            if (tempNode.dialogueType == DialogueNode.DialogueType.Question 
+                && tempNode.questionType == QuestionType.UnhelpfulThoughts)
+            {
+                counter++;
+            }
+            tempNode = tempNode.nextNode;
+        }
 
-        QuestionGenerator();
+        _moodDiaryInfo.Question_UnhelpfulThoughts = new string[counter];
+        _moodDiaryInfo.Answer_UnhelpfulThoughts = new string[counter];
+
+        _currDialogueNode = dialogueNode;
+        _yesNoSelected = false;
+
+        DialogueGenerator();
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if(answerInput.text == "")
+        if(answerInput.gameObject.activeSelf && answerInput.text == "")
         {
             moodCheckManager.next.interactable = false;
         }
@@ -53,281 +73,353 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
         }
 	}
 
-    public void QuestionGenerator()
+    public void DialogueGenerator()
     {
-        int randNum;
-        switch (questionType)
+        // Set the question text
+        if (_currDialogueNode.content.Length == 1)
+            question.text = _currDialogueNode.content[0];
+        else
         {
-            case QuestionType.Situation:
-                randNum = Random.Range(0, situationQuestions.Length);
-                _currentQnR = situationQuestions[randNum];
-                if(_currentQnR.Question == "")
-                {
-                    _isQuestion = false;
-                    answerInput.gameObject.SetActive(false);
-                    ResponseGenerator();
-                }
-                else
-                {
-                    _isQuestion = true;
-                    _moodDiaryInfo.Question_Situation = question.text = situationQuestions[randNum].Question;
-                }
-                break;
-            case QuestionType.PhysicalSensations:
-                randNum = Random.Range(0, physicalSensationQuestions.Length);
-                _currentQnR = physicalSensationQuestions[randNum];
-                if (_currentQnR.Question == "")
-                {
-                    _isQuestion = false;
-                    answerInput.gameObject.SetActive(false);
-                    ResponseGenerator();
-                }
-                else
-                {
-                    _isQuestion = true;
-                    _moodDiaryInfo.Question_PhysicalSensation = question.text = physicalSensationQuestions[randNum].Question;
-                }
-                break;
-            case QuestionType.UnhelpfulThoughts:
-                _currentQnR = unhelpfulThoughtsQuestions[_unhelpfulQuestionsCount];
-                if (_currentQnR.Question == "")
-                {
-                    _isQuestion = false;
-                    answerInput.gameObject.SetActive(false);
-                    ResponseGenerator();
-                }
-                else
-                {
-                    _isQuestion = true;
-                    _moodDiaryInfo.Question_UnhelpfulThoughts[_unhelpfulQuestionsCount] = question.text = unhelpfulThoughtsQuestions[_unhelpfulQuestionsCount].Question;
-                }
-                break;
-            case QuestionType.ChallengeThoughts:
-                if (_isYes)
-                {
-                    if (_challengeThoughtsQuestionsCount < challengeThoughtsQuestionsYes.Length)
-                    {
-                        _currentQnR = challengeThoughtsQuestionsYes[_challengeThoughtsQuestionsCount];
-                        if (_currentQnR.Question == "")
-                        {
-                            _isQuestion = false;
-                            answerInput.gameObject.SetActive(false);
-                            ResponseGenerator();
-                        }
-                        else
-                        {
-                            _isQuestion = true;
-                            _moodDiaryInfo.Question_ChallengeThoughts[_challengeThoughtsQuestionsCount] = question.text
-                             = challengeThoughtsQuestionsYes[_challengeThoughtsQuestionsCount].Question;
-                            _challengeThoughtsQuestionsCount++;
-                        }
-                        
-                    }
-                }
-                else
-                {
-                    if (_challengeThoughtsQuestionsCount < challengeThoughtsQuestionsNo.Length)
-                    {
-                        _currentQnR = challengeThoughtsQuestionsNo[_challengeThoughtsQuestionsCount];
-                        if (_currentQnR.Question == "")
-                        {
-                            _isQuestion = false;
-                            answerInput.gameObject.SetActive(false);
-                            ResponseGenerator();
-                        }
-                        else
-                        {
-                            _isQuestion = true;
-                            _moodDiaryInfo.Question_ChallengeThoughts[_challengeThoughtsQuestionsCount] = question.text
-                            = challengeThoughtsQuestionsNo[_challengeThoughtsQuestionsCount].Question;
-                            _challengeThoughtsQuestionsCount++;
-                        }
-                    }
-                }
-                break;
+            int randNum = Random.Range(0, _currDialogueNode.content.Length);
+            question.text = _currDialogueNode.content[randNum];
         }
-    }
 
-    public void ResponseGenerator()
-    {
-        _isQuestion = false;
-        switch (questionType)
-        {
-            case QuestionType.Situation:
-                question.text = _currentQnR.Response;
-                break;
-            case QuestionType.PhysicalSensations:
-                question.text = _currentQnR.Response;
-                break;
-            case QuestionType.UnhelpfulThoughts:
-                question.text = _currentQnR.Response;
-                break;
-            case QuestionType.ChallengeThoughts:
-                question.text = _currentQnR.Response;
-                break;
+        if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Question)
+        {   // If the dialogue type is question 
+
+            // Set input text as active
+            if(!YesNo.activeSelf)
+                answerInput.gameObject.SetActive(true);
+        }
+        else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
+        {   // If the dialogue type is question 
+
+            // Set input text as not active
+            answerInput.gameObject.SetActive(false);
         }
     }
 
     public void Back()
     {
-        switch (questionType)
+        if (_isChallengingQuestions)
         {
-            case QuestionType.Situation:
+            // Check if previous node is null
+            if (_currDialogueNode.prevNode == null)
+            {   
+                YesNo.SetActive(true);
+
+                _currDialogueNode = dialogueNode_Last;
+
+                _isChallengingQuestions = false;
+
+                answerInput.gameObject.SetActive(false);
+
+                for(int i = 0; i < _moodDiaryInfo.Answer_ChallengeThoughts.Length;  ++i)
+                {
+                    _moodDiaryInfo.Answer_ChallengeThoughts[i] = "";
+                    _moodDiaryInfo.Question_ChallengeThoughts[i] = "";
+                }
+            }
+            else
+            {
+                // If previous node not null,
+                // set to previous dialogue
+
+                // Set _currDialogueNode to it's prev node
+                _currDialogueNode = _currDialogueNode.prevNode;
+                // Check the dialogue type
+                if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Question)
+                {   // If it is question type
+                    switch (_currDialogueNode.questionType)
+                    {
+                        case QuestionType.ChallengeThoughts:
+                            if (_currDialogueNode.nextNode.dialogueType == DialogueNode.DialogueType.Question
+                                && _currDialogueNode.nextNode.questionType == QuestionType.ChallengeThoughts)
+                            {
+                                // Add player's input into the mood diary info
+                                _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                            }
+                            // Set the input text as next question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.index];
+                            break;
+                    }
+                }
+                else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
+                {   // If it is response type
+
+                    if (_currDialogueNode.nextNode.dialogueType == DialogueNode.DialogueType.Question)
+                    {
+                        if (_currDialogueNode.nextNode.questionType == QuestionType.ChallengeThoughts)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                        }
+                    }
+                }
+            }
+
+            // Generate Dialogue
+            DialogueGenerator();
+        }
+        else
+        {
+            // Check if previous node is null
+            if (_currDialogueNode.prevNode == null)
+            {   // If previous node is null,
+                // go back to activity selection
+
                 Reset();
                 moodCheckManager.OpenActivitySelection();
-                break;
-            case QuestionType.PhysicalSensations:
-                _moodDiaryInfo.Answer_PhysicalSensation = answerInput.text;
-                answerInput.text = _moodDiaryInfo.Answer_Situation;
-                questionType = QuestionType.Situation;
-                QuestionGenerator();
-                break;
-            case QuestionType.UnhelpfulThoughts:
-                _moodDiaryInfo.Answer_UnhelpfulThoughts[_unhelpfulQuestionsCount] = answerInput.text;
-                answerInput.text = _moodDiaryInfo.Answer_PhysicalSensation;
-                questionType = QuestionType.PhysicalSensations;
-                QuestionGenerator();
-                break;
-            case QuestionType.ChallengeThoughts:
-                if (_challengeThoughtsQuestionsCount == 1)
-                {
-                    _moodDiaryInfo.Answer_ChallengeThoughts[0] = answerInput.text;
-                    answerInput.text = _moodDiaryInfo.Answer_UnhelpfulThoughts[_unhelpfulQuestionsCount];
-                    questionType = QuestionType.UnhelpfulThoughts;
-                    _challengeThoughtsQuestionsCount = 0;
-                    QuestionGenerator();
+            }
+            else
+            {
+                // If previous node not null,
+                // set to previous dialogue
+
+                // Set _currDialogueNode to it's prev node
+                _currDialogueNode = _currDialogueNode.prevNode;
+                // Check the dialogue type
+                if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Question)
+                {   // If it is question type
+                    switch (_currDialogueNode.questionType)
+                    {                       
+                        case QuestionType.UnhelpfulThoughts:
+                            if (_currDialogueNode.nextNode.dialogueType == DialogueNode.DialogueType.Question)
+                            {
+                                if (_currDialogueNode.nextNode.questionType == QuestionType.UnhelpfulThoughts)
+                                {
+                                    // Add player's input into the mood diary info
+                                    _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                                }
+                                else if(_currDialogueNode.nextNode.questionType == QuestionType.UnhelpfulThoughts)
+                                {
+                                    // Add player's input into the mood diary info
+                                    _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                                }
+                            }
+                            // Set the input text as next question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index];
+                            break;
+                        case QuestionType.PhysicalSensations:
+                            if (_currDialogueNode.nextNode.dialogueType == DialogueNode.DialogueType.Question
+                                && _currDialogueNode.nextNode.questionType == QuestionType.UnhelpfulThoughts)
+                            {
+                                // Add player's input into the mood diary info
+                                _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                            }
+                            // Set the input text as next question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_PhysicalSensation;
+                            break;
+                        case QuestionType.Situation:
+                            // Set the input text as previous question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_Situation;
+                            break;
+                    }
                 }
-                else if (_challengeThoughtsQuestionsCount > 1)
-                {
-                    _challengeThoughtsQuestionsCount -= 2;
-                    _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount + 1] = answerInput.text;
-                    answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount];
-                    QuestionGenerator();
+                else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
+                {   // If it is response type
+
+                    if (_currDialogueNode.nextNode.dialogueType == DialogueNode.DialogueType.Question)
+                    {
+                        if (_currDialogueNode.nextNode.questionType == QuestionType.UnhelpfulThoughts)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.nextNode.index] = answerInput.text;
+                        }
+                        else if (_currDialogueNode.nextNode.questionType == QuestionType.PhysicalSensations)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_PhysicalSensation = answerInput.text;
+                        }
+                        else if (_currDialogueNode.nextNode.questionType == QuestionType.Situation)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_Situation = answerInput.text;
+                        }
+                    }
                 }
-                break;
+
+                if (YesNo.activeSelf)
+                    YesNo.SetActive(false);
+
+                // Generate Dialogue
+                DialogueGenerator();
+            }
         }
     }
 
     public void Next()
     {
-        switch(questionType)
+        if (_isChallengingQuestions)
         {
-            case QuestionType.Situation:
-                if ((_currentQnR.Response == "") || !_isQuestion)
-                {
-                    // Set the input text as active
-                    answerInput.gameObject.SetActive(true);
-                    // Set next question type
-                    questionType = QuestionType.PhysicalSensations;
-                    // Add the player's input to the mood diary info
-                    _moodDiaryInfo.Answer_Situation = answerInput.text;
-                    // Set the input text as next question's answer
-                    answerInput.text = _moodDiaryInfo.Answer_PhysicalSensation;
-                    QuestionGenerator();
-                }
-                else
-                {
-                    // Set the input text as not active
-                    answerInput.gameObject.SetActive(false);
-                    ResponseGenerator();
-                }
-                break;
-            case QuestionType.PhysicalSensations:
-                if ((_currentQnR.Response == "") || !_isQuestion)
-                {
-                    // Set the input text as active
-                    answerInput.gameObject.SetActive(true);
-                    // Set next question type
-                    questionType = QuestionType.UnhelpfulThoughts;
-                    // Add the player's input to the mood diary info
-                    _moodDiaryInfo.Answer_PhysicalSensation = answerInput.text;
-                    // Set the input text as next question's answer
-                    answerInput.text = _moodDiaryInfo.Answer_UnhelpfulThoughts[_unhelpfulQuestionsCount];
-                    QuestionGenerator();
-                }
-                else
-                {
-                    // Set the input text as not active
-                    answerInput.gameObject.SetActive(false);
-                    ResponseGenerator();
-                }
-                break;
-            case QuestionType.UnhelpfulThoughts:
-                if (_unhelpfulQuestionsCount < unhelpfulThoughtsQuestions.Length)
-                {
-                    if(_unhelpfulQuestionsCount == 0)
-                    {
-                        _moodDiaryInfo.Answer_UnhelpfulThoughts[_unhelpfulQuestionsCount] = answerInput.text;
-                        // Set the input text as not active
-                        answerInput.gameObject.SetActive(false);
-                        ResponseGenerator();
-                        _unhelpfulQuestionsCount++;
-                    }
-                    else if(_unhelpfulQuestionsCount == 1)
-                    {
-                        if ((_currentQnR.Response == "") || !_isQuestion)
-                        {
-                            // Set the input text as active
-                            answerInput.gameObject.SetActive(true);
-                            // Set next question type
-                            questionType = QuestionType.ChallengeThoughts;
-                            // Add the player's input to the mood diary info
-                            _moodDiaryInfo.Answer_UnhelpfulThoughts[_unhelpfulQuestionsCount] = answerInput.text;
-                            // Set the input text as next question's answer
-                            answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[0];
-                            QuestionGenerator();
-                        }
-                        else
-                        {
-                            // Set the input text as not active
-                            answerInput.gameObject.SetActive(false);
-                            ResponseGenerator();
-                            _unhelpfulQuestionsCount++;
-                        }
-                    }                    
-                }
-                break;
-            case QuestionType.ChallengeThoughts:
-                if (_isYes)
-                {
-                    if (_challengeThoughtsQuestionsCount >= challengeThoughtsQuestionsYes.Length)
-                    {
-                        // Add the player's input to the mood diary info
-                        _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount - 1] = answerInput.text;
-                        Save();
-                        moodCheckManager.OpenActivitySelection();
-                        moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(0);
-                    }
-                    else
-                    {
-                        // Add the player's input to the mood diary info
-                        _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount - 1] = answerInput.text;
-                        // Set the input text as next question's answer
-                        answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount];
-                        QuestionGenerator();
-                    }
+            // Check if previous node is null
+            if (_currDialogueNode.nextNode == null)
+            {   // If previous node is null,
+                // go back to activity selection
 
+                Save();
+                // Open the activity selection menu
+                moodCheckManager.OpenActivitySelection();
+                // Remove the worry diary activity from activity selection
+                moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(1);
+            }
+            else
+            {
+                // If previous node not null,
+                // set to previous dialogue
+
+                // Set _currDialogueNode to it's prev node
+                _currDialogueNode = _currDialogueNode.nextNode;
+                // Check the dialogue type
+                if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Question)
+                {   // If it is question type
+                    if (_currDialogueNode.prevNode.dialogueType == DialogueNode.DialogueType.Question
+                        && _currDialogueNode.prevNode.questionType == QuestionType.ChallengeThoughts)
+                    {
+                        // Add player's input into the mood diary info
+                        _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.prevNode.index] = answerInput.text;
+                    }
+                    // Set the input text as next question's answer
+                    answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.index];
+                    
                 }
-                else
+                else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
+                {   // If it is response type
+
+                    if (_currDialogueNode.prevNode.dialogueType == DialogueNode.DialogueType.Question)
+                    {
+                        // Add player's input into the mood diary info
+                        _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.prevNode.index] = answerInput.text;
+                    }
+                }
+
+                // Generate Dialogue
+                DialogueGenerator();
+            }
+        }
+        else
+        {
+            // Check if next node is null
+            if (_currDialogueNode.nextNode == null)
+            {   // Next Node is null
+
+                if(YesNo.transform.GetChild(0).GetComponent<Image>().color 
+                    == YesNo.transform.GetChild(0).GetComponent<Button>().colors.disabledColor)
                 {
-                    if (_challengeThoughtsQuestionsCount >= challengeThoughtsQuestionsNo.Length)
+                    _currDialogueNode = dialogueNode_No;
+
+                    _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index] = "No";
+                }
+                else if (YesNo.transform.GetChild(1).GetComponent<Image>().color
+                    == YesNo.transform.GetChild(1).GetComponent<Button>().colors.disabledColor)
+                {
+                    _currDialogueNode = dialogueNode_Yes;
+
+                    _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index] = "Yes";
+                }
+
+                YesNo.SetActive(false);
+
+                _isChallengingQuestions = true;
+
+                answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_currDialogueNode.index];
+            }
+            else
+            {
+                // If next node not null,
+                // set to next dialogue
+
+                // Set _currDialogueNode to it's prev node
+                _currDialogueNode = _currDialogueNode.nextNode;
+                // Check the dialogue type
+                if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Question)
+                {   // If it is question type
+                    switch (_currDialogueNode.questionType)
                     {
-                        // Add the player's input to the mood diary info
-                        _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount - 1] = answerInput.text;
-                        Save();
-                        moodCheckManager.OpenActivitySelection();
-                        moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(0);
-                    }
-                    else
-                    {
-                        // Add the player's input to the mood diary info
-                        _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount - 1] = answerInput.text;
-                        // Set the input text as next question's answer
-                        answerInput.text = _moodDiaryInfo.Answer_ChallengeThoughts[_challengeThoughtsQuestionsCount];
-                        QuestionGenerator();
+                        case QuestionType.UnhelpfulThoughts:
+                            if (_currDialogueNode.prevNode.dialogueType == DialogueNode.DialogueType.Question)
+                            {
+                                if (_currDialogueNode.prevNode.questionType == QuestionType.PhysicalSensations)
+                                {
+                                    // Add player's input into the mood diary info
+                                    _moodDiaryInfo.Answer_PhysicalSensation = answerInput.text;
+                                }
+                                else if (_currDialogueNode.prevNode.questionType == QuestionType.UnhelpfulThoughts)
+                                {
+                                    // Add player's input into the mood diary info
+                                    _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.prevNode.index] = answerInput.text;
+                                }
+                            }
+
+                            if (_currDialogueNode.nextNode == null)
+                            {   // If the node after the next is null
+
+                                // Set Yes / No buttons as true
+                                YesNo.SetActive(true);
+                                // Set input as false
+                                answerInput.gameObject.SetActive(false);
+                            }
+                            else
+                            {
+                                // Set the input text as next question's answer
+                                answerInput.text = _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index];
+                            }
+                            break;
+                        case QuestionType.PhysicalSensations:
+                            // Set the input text as next question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_PhysicalSensation;
+                            break;
+                        case QuestionType.Situation:
+                            // Set the input text as previous question's answer
+                            answerInput.text = _moodDiaryInfo.Answer_Situation;
+                            break;
                     }
                 }
-                break;
+                else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
+                {   // If it is response type
+
+                    if (_currDialogueNode.prevNode.dialogueType == DialogueNode.DialogueType.Question)
+                    {
+                        if (_currDialogueNode.prevNode.questionType == QuestionType.UnhelpfulThoughts)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.prevNode.index] = answerInput.text;
+                        }
+                        else if (_currDialogueNode.prevNode.questionType == QuestionType.PhysicalSensations)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_PhysicalSensation = answerInput.text;
+                        }
+                        else if (_currDialogueNode.prevNode.questionType == QuestionType.Situation)
+                        {
+                            // Add player's input into the mood diary info
+                            _moodDiaryInfo.Answer_Situation = answerInput.text;
+                        }
+                    }
+                }
+            }
+
+            // Generate Dialogue
+            DialogueGenerator();
+        }
+    }
+
+    public void YesNoClicked(int _selected)
+    {
+        if(YesNo.transform.GetChild(_selected).GetComponent<Image>().color 
+            == YesNo.transform.GetChild(_selected).GetComponent<Button>().colors.normalColor
+            && !_yesNoSelected)
+        {
+            YesNo.transform.GetChild(_selected).GetComponent<Image>().color =
+                YesNo.transform.GetChild(_selected).GetComponent<Button>().colors.disabledColor;
+            _yesNoSelected = true;
+        }
+        else if(YesNo.transform.GetChild(_selected).GetComponent<Image>().color
+            == YesNo.transform.GetChild(_selected).GetComponent<Button>().colors.disabledColor)
+        {
+            YesNo.transform.GetChild(_selected).GetComponent<Image>().color =
+                YesNo.transform.GetChild(_selected).GetComponent<Button>().colors.normalColor;
+            _yesNoSelected = false;
         }
     }
 
@@ -357,10 +449,9 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
             _moodDiaryInfo.Question_ChallengeThoughts[i] = "";
         }
 
-        questionType = QuestionType.Situation;
-        _challengeThoughtsQuestionsCount = 0;
-        _unhelpfulQuestionsCount = 0;
+        _yesNoSelected = false;
         answerInput.text = "";
+        _isChallengingQuestions = false;
     }
 
 }

@@ -74,15 +74,15 @@ public class MoodDiaryInfo
 public class AngerDiaryInfo
 {
     // Questions
-    public string[] Question_Situation;
+    public string Question_Situation;
     public string Question_PhysicalSensation;
-    public string Question_UnhelpfulThoughts;
+    public string[] Question_UnhelpfulThoughts;
     public string[] Question_ChallengeThoughts;
 
     // Answers
-    public string[] Answer_Situation;
+    public string Answer_Situation;
     public string Answer_PhysicalSensation;
-    public string Answer_UnhelpfulThoughts;
+    public string[] Answer_UnhelpfulThoughts;
     public string[] Answer_ChallengeThoughts;
 }
 

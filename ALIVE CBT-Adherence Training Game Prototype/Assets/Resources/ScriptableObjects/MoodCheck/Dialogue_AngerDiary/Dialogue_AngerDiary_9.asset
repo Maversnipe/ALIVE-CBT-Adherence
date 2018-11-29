@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d9a519d9d789f47859e2296655e419, type: 3}
+  m_Name: Dialogue_AngerDiary_9
+  m_EditorClassIdentifier: 
+  dialogueType: 0
+  questionType: 4
+  nextNode: {fileID: 11400000, guid: 892c5369fb8d47a4aae8d38e4295e94f, type: 2}
+  prevNode: {fileID: 11400000, guid: 0470f79fc5f0bd344b5f1e17a913591c, type: 2}
+  content:
+  - What will be the most helpful thing to do, or think about, for yourself, others
+    or the situation?
+  index: 2

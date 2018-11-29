@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d9a519d9d789f47859e2296655e419, type: 3}
+  m_Name: Dialogue_AngerDiary_5
+  m_EditorClassIdentifier: 
+  dialogueType: 1
+  questionType: 3
+  nextNode: {fileID: 11400000, guid: b8a6a0256df24944db7a077b77646842, type: 2}
+  prevNode: {fileID: 11400000, guid: 727b8bdabb35089479e7e9ffaa5f2a61, type: 2}
+  content:
+  - That sounds overwhelming. Sometimes, our mind is not our friend and may tell us
+    things that may not be entirely true.
+  index: 0

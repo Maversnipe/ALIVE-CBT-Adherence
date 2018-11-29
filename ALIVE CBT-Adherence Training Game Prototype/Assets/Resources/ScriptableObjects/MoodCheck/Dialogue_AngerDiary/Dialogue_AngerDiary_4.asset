@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6d9a519d9d789f47859e2296655e419, type: 3}
+  m_Name: Dialogue_AngerDiary_4
+  m_EditorClassIdentifier: 
+  dialogueType: 0
+  questionType: 3
+  nextNode: {fileID: 11400000, guid: f466e3bca8b47534c9de75da51e0f245, type: 2}
+  prevNode: {fileID: 11400000, guid: 3d7fa7d155bca364fbd834f7ffc4f9a4, type: 2}
+  content:
+  - What did these thoughts mean to you in the moment?
+  index: 1

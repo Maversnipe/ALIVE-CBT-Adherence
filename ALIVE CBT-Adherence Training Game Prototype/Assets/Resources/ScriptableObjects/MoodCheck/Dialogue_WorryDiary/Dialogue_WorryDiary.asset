@@ -8,11 +8,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: d6d9a519d9d789f47859e2296655e419, type: 3}
   m_Name: Dialogue_WorryDiary
-  m_EditorClassIdentifier: Assembly-CSharp::DialogueNode
+  m_EditorClassIdentifier: 
   dialogueType: 0
   questionType: 1
-  nextNode: {fileID: 11400000, guid: c94b8d5990e2c6f46ae292f80f3d3d30, type: 2}
+  nextNode: {fileID: 11400000, guid: 94de68b2198fb1b4a842a5b99a1ab328, type: 2}
   prevNode: {fileID: 0}
-  content: Can you share with me what you are worried about?
+  content:
+  - 'Can you share with me what you are worried about? '

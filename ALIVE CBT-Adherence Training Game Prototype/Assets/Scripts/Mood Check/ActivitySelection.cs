@@ -16,8 +16,6 @@ public class ActivitySelection : MonoBehaviour {
     public Button positiveThoughtsJournal;
     public Button worryDiary;
     public Button angerDiary;
-    public Button calmRelaxationExercise;
-
     public MoodCheckManager moodCheckManager;
 
     // Use this for initialization
@@ -48,7 +46,6 @@ public class ActivitySelection : MonoBehaviour {
                     anxious.gameObject.SetActive(true);
                     // Set activities to be true
                     worryDiary.gameObject.SetActive(true);
-                    calmRelaxationExercise.gameObject.SetActive(true);
                     positiveThoughtsJournal.gameObject.SetActive(true);
                     break;
                 case EmotionInfo.EmotionType.Angry:
@@ -56,7 +53,6 @@ public class ActivitySelection : MonoBehaviour {
                     angry.gameObject.SetActive(true);
                     // Set activities to be true
                     angerDiary.gameObject.SetActive(true);
-                    calmRelaxationExercise.gameObject.SetActive(true);
                     break;
                 case EmotionInfo.EmotionType.Happy:
                     // Set emotion icon to be true
@@ -96,9 +92,6 @@ public class ActivitySelection : MonoBehaviour {
             case 3:
                 angerDiary.interactable = false;
                 break;
-            case 4:
-                calmRelaxationExercise.interactable = false;
-                break;
         }
     }
 
@@ -108,6 +101,5 @@ public class ActivitySelection : MonoBehaviour {
         positiveThoughtsJournal.interactable = true;
         worryDiary.interactable = true;
         angerDiary.interactable = true;
-        calmRelaxationExercise.interactable = true;
     }
 }

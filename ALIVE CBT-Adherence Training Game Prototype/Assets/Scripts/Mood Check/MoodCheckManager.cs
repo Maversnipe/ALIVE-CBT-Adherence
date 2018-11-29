@@ -16,7 +16,6 @@ public class MoodCheckManager : MonoBehaviour
     public GameObject positiveThoughtsJournal;
     public GameObject worryDiary;
     public GameObject angerDiary;
-    public GameObject calmRelaxationExercise;
     public GameObject moodRatingSecond;
 
     public GameObject moodCheckMenu;
@@ -97,8 +96,6 @@ public class MoodCheckManager : MonoBehaviour
             case MoodCheckPanels.AngerDiary:
                 angerDiary.GetComponent<AngerDiary>().Back();
                 break;
-            case MoodCheckPanels.CalmRelaxationExercise:
-                break;
             case MoodCheckPanels.MoodRatingSecond:
                 break;
         }
@@ -156,7 +153,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(false);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
@@ -173,7 +169,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(false);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
@@ -190,7 +185,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(false);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
@@ -207,7 +201,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(true);
         worryDiary.SetActive(false);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
@@ -224,7 +217,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(true);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
@@ -241,28 +233,10 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(false);
         angerDiary.SetActive(true);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(false);
 
         _prevIndexes.Push(_currentPanel);
         _currentPanel = MoodCheckPanels.AngerDiary;
-    }
-
-    public void OpenCalmRelaxation()
-    {
-        // Set the activity selection panel active 
-        // and the other panels as not active
-        moodRating.SetActive(false);
-        activitySelection.SetActive(false);
-        moodDiary.SetActive(false);
-        positiveThoughtsJournal.SetActive(false);
-        worryDiary.SetActive(false);
-        angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(true);
-        moodRatingSecond.SetActive(false);
-
-        _prevIndexes.Push(_currentPanel);
-        _currentPanel = MoodCheckPanels.CalmRelaxationExercise;
     }
 
     public void OpenMoodRatingSecond()
@@ -275,7 +249,6 @@ public class MoodCheckManager : MonoBehaviour
         positiveThoughtsJournal.SetActive(false);
         worryDiary.SetActive(false);
         angerDiary.SetActive(false);
-        calmRelaxationExercise.SetActive(false);
         moodRatingSecond.SetActive(true);
 
         _prevIndexes.Push(_currentPanel);
