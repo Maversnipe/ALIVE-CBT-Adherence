@@ -20,8 +20,13 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
     private DialogueNode _currDialogueNode;
     private bool _yesNoSelected;
 
+    private DialogueNode _originalNode;
+    private DialogueNode _originalNode_Yes;
+    private DialogueNode _originalNode_No;
+
     // Use this for initialization
     void Start () {
+
         _moodDiaryInfo = new MoodDiaryInfo();
 
         DialogueNode tempNode = dialogueNode_No;
@@ -71,6 +76,14 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
         {
             moodCheckManager.next.interactable = true;
         }
+
+        if(YesNo.activeSelf)
+        {
+            if(_yesNoSelected)
+                moodCheckManager.next.interactable = true;
+            else
+                moodCheckManager.next.interactable = false;
+        }
 	}
 
     public void DialogueGenerator()
@@ -90,6 +103,22 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
             // Set input text as active
             if(!YesNo.activeSelf)
                 answerInput.gameObject.SetActive(true);
+
+            switch(_currDialogueNode.questionType)
+            {
+                case QuestionType.Situation:
+                    _moodDiaryInfo.Question_Situation = question.text;
+                    break;
+                case QuestionType.PhysicalSensations:
+                    _moodDiaryInfo.Question_PhysicalSensation = question.text;
+                    break;
+                case QuestionType.UnhelpfulThoughts:
+                    _moodDiaryInfo.Question_UnhelpfulThoughts[_currDialogueNode.index] = question.text;
+                    break;
+                case QuestionType.ChallengeThoughts:
+                    _moodDiaryInfo.Question_ChallengeThoughts[_currDialogueNode.index] = question.text;
+                    break;
+            }
         }
         else if (_currDialogueNode.dialogueType == DialogueNode.DialogueType.Response)
         {   // If the dialogue type is question 
@@ -261,7 +290,7 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
                 // Open the activity selection menu
                 moodCheckManager.OpenActivitySelection();
                 // Remove the worry diary activity from activity selection
-                moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(1);
+                moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(0);
             }
             else
             {
@@ -306,16 +335,14 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
                 if(YesNo.transform.GetChild(0).GetComponent<Image>().color 
                     == YesNo.transform.GetChild(0).GetComponent<Button>().colors.disabledColor)
                 {
-                    _currDialogueNode = dialogueNode_No;
-
                     _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index] = "No";
+                    _currDialogueNode = dialogueNode_No;
                 }
                 else if (YesNo.transform.GetChild(1).GetComponent<Image>().color
                     == YesNo.transform.GetChild(1).GetComponent<Button>().colors.disabledColor)
                 {
-                    _currDialogueNode = dialogueNode_Yes;
-
                     _moodDiaryInfo.Answer_UnhelpfulThoughts[_currDialogueNode.index] = "Yes";
+                    _currDialogueNode = dialogueNode_Yes;
                 }
 
                 YesNo.SetActive(false);
@@ -427,6 +454,7 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
     {
         moodCheckManager.moodCheckInfo.moodDiaryInfo = _moodDiaryInfo;
         moodCheckManager.moodCheckInfo.moodDiaryActive = true;
+        Reset();
     }
 
     public void Reset()
@@ -452,6 +480,8 @@ public class MoodDiary : MonoBehaviour, IMoodCheckActivity_Generic
         _yesNoSelected = false;
         answerInput.text = "";
         _isChallengingQuestions = false;
+
+        _currDialogueNode = dialogueNode;
     }
 
 }

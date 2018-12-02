@@ -63,4 +63,18 @@ public class Transition_ActivityMood : MonoBehaviour {
     {
         targetIndex = newTarget;
     }
+
+    public void Reset()
+    {
+        // Make panel be at center
+        Vector3 dist = center.position - panels[0].transform.position;
+
+        for (int i = 0; i < panels.Length; ++i)
+        {
+            panels[i].transform.position += dist;
+        }
+
+        // Set target back to 0
+        targetIndex = 0;
+    }
 }

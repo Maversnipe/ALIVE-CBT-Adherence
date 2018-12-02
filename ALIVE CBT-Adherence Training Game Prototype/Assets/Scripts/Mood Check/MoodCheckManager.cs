@@ -57,6 +57,7 @@ public class MoodCheckManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
     }
 
     public void Save()
@@ -67,6 +68,9 @@ public class MoodCheckManager : MonoBehaviour
         }
         moodCheckInfo.dateTime = DateTime.Now.ToString();
         manager.GetComponent<EmotionsManager>().AddMoodCheck(moodCheckInfo);
+        moodCheckInfo = new MoodCheckInfo();
+        moodCheckInfo.emotionsFeltBefore = new EmotionInfo[4];
+        moodCheckInfo.emotionsFeltAfter = new EmotionInfo[4];
     }
 
     // When the player presses the back button
@@ -82,7 +86,9 @@ public class MoodCheckManager : MonoBehaviour
                 break;
             case MoodCheckPanels.ActivitySelection:
                 activitySelection.GetComponent<ActivitySelection>().Back();
-
+                moodCheckInfo = new MoodCheckInfo();
+                moodCheckInfo.emotionsFeltBefore = new EmotionInfo[4];
+                moodCheckInfo.emotionsFeltAfter = new EmotionInfo[4];
                 break;
             case MoodCheckPanels.MoodDiary:
                 moodDiary.GetComponent<MoodDiary>().Back();
@@ -97,6 +103,7 @@ public class MoodCheckManager : MonoBehaviour
                 angerDiary.GetComponent<AngerDiary>().Back();
                 break;
             case MoodCheckPanels.MoodRatingSecond:
+                OpenActivitySelection();
                 break;
         }
     }
@@ -109,16 +116,15 @@ public class MoodCheckManager : MonoBehaviour
                 OpenActivitySelection();
                 for (int i = 0; i < listOfPlayerEmotions.Count; ++i)
                 {
-                    moodCheckInfo.emotionsFeltBefore[i] = listOfPlayerEmotions[i];
+                    EmotionInfo newInfo = new EmotionInfo((int)listOfPlayerEmotions[i].emotionType);
+                    newInfo.intensity = listOfPlayerEmotions[i].intensity; 
+                    moodCheckInfo.emotionsFeltBefore[i] = newInfo;
                 }
                 activitySelection.GetComponent<ActivitySelection>().Open();
                 break;
             case MoodCheckPanels.ActivitySelection:
-                Save();
-                Reset();
-                manager.GetComponent<SceneManager_Calendar>().OpenDayMenu();
-                moodCheckMenu.GetComponent<MoodCheckMenu>().StartLoadActivities();
-                this.gameObject.SetActive(false);
+                OpenMoodRatingSecond();
+                moodRatingSecond.GetComponent<MoodRatingSecond>().SetEmotions();
                 break;
             case MoodCheckPanels.MoodDiary:
                 moodDiary.GetComponent<MoodDiary>().Next();
@@ -132,12 +138,11 @@ public class MoodCheckManager : MonoBehaviour
             case MoodCheckPanels.AngerDiary:
                 angerDiary.GetComponent<AngerDiary>().Next();
                 break;
-            case MoodCheckPanels.CalmRelaxationExercise:
-                break;
             case MoodCheckPanels.MoodRatingSecond:
                 Save();
                 Reset();
                 manager.GetComponent<SceneManager_Calendar>().OpenDayMenu();
+                moodCheckMenu.GetComponent<MoodCheckMenu>().StartLoadActivities();
                 this.gameObject.SetActive(false);
                 break;
         }
@@ -263,6 +268,9 @@ public class MoodCheckManager : MonoBehaviour
 
         activitySelection.GetComponent<ActivitySelection>().Reset();
         moodRating.GetComponent<MoodRating>().Reset();
+        moodRatingSecond.GetComponent<MoodRatingSecond>().Reset();
+
+        OpenMoodRating();
     }
 
     public void SetCurrentPanel(MoodCheckPanels _newCurrent)
@@ -274,5 +282,4 @@ public class MoodCheckManager : MonoBehaviour
     {
         return _currentPanel;
     }
-
 }

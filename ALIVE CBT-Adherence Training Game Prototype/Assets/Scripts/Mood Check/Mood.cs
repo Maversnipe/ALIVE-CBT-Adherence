@@ -38,7 +38,7 @@ public class Mood : MonoBehaviour {
     {
         // Open the activity menu
         manager.GetComponent<SceneManager_Calendar>().OpenMoodMenu();
-        moodPanel.GetComponent<MoodPanel>().moodCheckInfo = _moodCheckInfo;
+        moodPanel.GetComponent<MoodPanel>().SetMoodPanel(_moodCheckInfo);
     }
 
     public MoodCheckInfo GetMoodCheckInfo()

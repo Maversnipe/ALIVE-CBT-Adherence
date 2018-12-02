@@ -36,7 +36,7 @@ public class EmotionsManager : MonoBehaviour {
         databaseRef.Child("moodCheck").Child(_moodCheckInfo.key).SetRawJsonValueAsync(json);
     }
 
-    public void LoadMood(DateTime _dateTime, Action<bool> callBackFunction)
+    public void LoadMood(Action<bool> callBackFunction)
     {
         FirebaseDatabase.DefaultInstance
             .GetReference("moodCheck")
@@ -51,7 +51,6 @@ public class EmotionsManager : MonoBehaviour {
                     listOfMoodCheck.Clear();
                     _datasnapshot = task.Result;
                 }
-                Debug.Log("Ni");
                 callBackFunction(true);
             });
     }
@@ -81,21 +80,16 @@ public class EmotionsManager : MonoBehaviour {
 
     public List<MoodCheckInfo> GetMoodCheck(DateTime _dateTime)
     {
-        listOfMoodCheck.Clear();
         for (int i = 0; i < _datasnapshot.ChildrenCount; ++i)
         {
             MoodCheckInfo newMood = JsonUtility.FromJson<MoodCheckInfo>(_datasnapshot.Children.ToList()[i].GetRawJsonValue());
             
             DateTime currDate = Convert.ToDateTime(newMood.dateTime);
-            Debug.Log(currDate.Date);
-            Debug.Log(_dateTime);
             if (currDate.Date == _dateTime)
             {
-                Debug.Log("Hi");
                 listOfMoodCheck.Add(newMood);
             }
         }
-        Debug.Log(listOfMoodCheck.Count);
         return listOfMoodCheck;
     }
 }

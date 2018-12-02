@@ -11,12 +11,19 @@ public class ActivitySelection : MonoBehaviour {
     public Image angry;
     public Image happy;
 
+    public GameObject informationsPanel;
+
     // Buttons for activity
     public Button moodDiary;
     public Button positiveThoughtsJournal;
     public Button worryDiary;
     public Button angerDiary;
     public MoodCheckManager moodCheckManager;
+
+    [HideInInspector]
+    public bool completedActivity = false;
+
+    private bool _inInfo = false;
 
     // Use this for initialization
     void Start () {
@@ -25,8 +32,11 @@ public class ActivitySelection : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        if (_inInfo || !completedActivity)
+            moodCheckManager.GetComponent<MoodCheckManager>().next.interactable = false;
+        else
+            moodCheckManager.GetComponent<MoodCheckManager>().next.interactable = true;
+    }
 
     public void SetEmotion()
     {
@@ -72,8 +82,15 @@ public class ActivitySelection : MonoBehaviour {
 
     public void Back()
     {
-        Reset();
-        moodCheckManager.OpenMoodRating();
+        if (_inInfo)
+        {
+            CloseInfo();
+        }
+        else
+        {
+            Reset();
+            moodCheckManager.OpenMoodRating();
+        }
     }
 
     public void RemoveActivity(int _buttonIndex)
@@ -93,13 +110,64 @@ public class ActivitySelection : MonoBehaviour {
                 angerDiary.interactable = false;
                 break;
         }
+        completedActivity = true;
+    }
+
+    public void OpenInfo(int _selected)
+    {
+        informationsPanel.SetActive(true);
+        switch(_selected)
+        {
+            case 0:
+                // Mood Diary
+                informationsPanel.transform.GetChild(0).GetComponent<Text>().text = "Mood Diary";
+                informationsPanel.transform.GetChild(1).GetComponent<Text>().text = "If you feel sad about something, you can click on this diary.";
+                break;
+            case 1:
+                // Worry Diary
+                // Mood Diary
+                informationsPanel.transform.GetChild(0).GetComponent<Text>().text = "Worry Diary";
+                informationsPanel.transform.GetChild(1).GetComponent<Text>().text = "If you feel anxious or worried about something, you can click on this diary.";
+                break;
+            case 2:
+                // Anger Diary
+                // Mood Diary
+                informationsPanel.transform.GetChild(0).GetComponent<Text>().text = "Anger Diary";
+                informationsPanel.transform.GetChild(1).GetComponent<Text>().text = "If you feel angry about something, you can click on this diary.";
+                break;
+            case 3:
+                // Positive Diary
+                // Mood Diary
+                informationsPanel.transform.GetChild(0).GetComponent<Text>().text = "Positive Thoughts Diary";
+                informationsPanel.transform.GetChild(1).GetComponent<Text>().text = "If you feel good or feel happy, you can click on this diary.";
+                break;
+        }
+
+        _inInfo = true;
+    }
+
+    public void CloseInfo()
+    {
+        informationsPanel.SetActive(false);
     }
 
     public void Reset()
     {
         moodDiary.interactable = true;
+        moodDiary.gameObject.SetActive(false);
+        depressed.gameObject.SetActive(false);
+
+
         positiveThoughtsJournal.interactable = true;
+        positiveThoughtsJournal.gameObject.SetActive(false);
+        happy.gameObject.SetActive(false);
+
         worryDiary.interactable = true;
+        worryDiary.gameObject.SetActive(false);
+        anxious.gameObject.SetActive(false);
+
         angerDiary.interactable = true;
+        angerDiary.gameObject.SetActive(false);
+        angry.gameObject.SetActive(false);
     }
 }

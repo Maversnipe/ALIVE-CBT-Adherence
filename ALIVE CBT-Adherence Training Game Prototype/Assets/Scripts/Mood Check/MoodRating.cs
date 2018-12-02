@@ -21,7 +21,14 @@ public class MoodRating : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+        if (selectedEmotionIndex != -1)
+        {
+            emotionsManager.next.interactable = true;
+        }
+        else
+        {
+            emotionsManager.next.interactable = false;
+        }
 	}
 
     public void ButtonClicked(int _selected)
@@ -63,7 +70,7 @@ public class MoodRating : MonoBehaviour {
             for(int i = emotionsManager.listOfPlayerEmotions.Count - 1; i >= 0; --i)
             {
                 if (emotionsManager.listOfPlayerEmotions[i].emotionType == (EmotionInfo.EmotionType)_selected)
-                {
+                { 
                     emotionsManager.listOfPlayerEmotions.RemoveAt(i);
                     intensityButtons[_selected].GetComponent<Image>().color = intensityButtons[_selected].colors.normalColor;
                     break;
@@ -143,6 +150,7 @@ public class MoodRating : MonoBehaviour {
     public void Reset()
     {
         intensitySlider.value = 0;
+        intensitySlider.gameObject.SetActive(false);
         intensityValue.text = intensitySlider.value.ToString();
         for(int i = 0; i < intensityButtons.Length; ++i)
         {

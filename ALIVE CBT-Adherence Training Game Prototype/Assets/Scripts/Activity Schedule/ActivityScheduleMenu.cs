@@ -21,7 +21,7 @@ public class ActivityScheduleMenu : MonoBehaviour
     private List<ActivityInfo> _listOfActivities = new List<ActivityInfo>();
     private string _activityKeyToBeDeleted = "";
     // TO check if activities can be loaded
-    private bool _canLoadActivites;
+    private bool _canLoadActivites = false;
 
     // Use this for initialization
     void Start () {
@@ -47,7 +47,7 @@ public class ActivityScheduleMenu : MonoBehaviour
         calendarUnit = _calendarUnit;
 
         // Do loading for activities
-        PrintActivities();
+        StartLoadActivities();
     }
 
     public string GetMonth(int _month)
@@ -97,7 +97,7 @@ public class ActivityScheduleMenu : MonoBehaviour
         }
 
         ActivityInfoComparer aiComparer = new ActivityInfoComparer();
-        _listOfActivities = manager.GetComponent<ActivityManager>().GetActivities(calendarUnit.dateTime);
+        _listOfActivities = manager.GetComponent<ActivityManager>().GetActivities(calendarUnit.dateTime.Date);
         _listOfActivities.Sort(aiComparer);
 
         for(int i = 0; i < _listOfActivities.Count; ++i)

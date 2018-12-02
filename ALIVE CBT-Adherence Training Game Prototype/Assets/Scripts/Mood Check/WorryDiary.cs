@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class WorryDiary : MonoBehaviour, IMoodCheckActivity_Generic
 {
     public DialogueNode dialogueNode;
+    public DialogueNode originalNode;
 
     public MoodCheckManager moodCheckManager;
     public Text question;
@@ -60,6 +61,16 @@ public class WorryDiary : MonoBehaviour, IMoodCheckActivity_Generic
 
             // Set input text as active
             answerInput.gameObject.SetActive(true);
+
+            switch (dialogueNode.questionType)
+            {
+                case QuestionType.Situation:
+                    _worryDiaryInfo.Question_Situation = question.text;
+                    break;
+                case QuestionType.ChallengeThoughts:
+                    _worryDiaryInfo.Question_ChallengeThoughts[dialogueNode.index] = question.text;
+                    break;
+            }
         }
         else if (dialogueNode.dialogueType == DialogueNode.DialogueType.Response)
         {   // If the dialogue type is question 
@@ -188,10 +199,12 @@ public class WorryDiary : MonoBehaviour, IMoodCheckActivity_Generic
     {
         moodCheckManager.moodCheckInfo.worryDiaryInfo = _worryDiaryInfo;
         moodCheckManager.moodCheckInfo.worryDiaryActive = true;
+        Reset();
     }
 
     public void Reset()
     {
+        dialogueNode = originalNode;
         _worryDiaryInfo.Answer_Situation = "";
         _worryDiaryInfo.Question_Situation = "";
 

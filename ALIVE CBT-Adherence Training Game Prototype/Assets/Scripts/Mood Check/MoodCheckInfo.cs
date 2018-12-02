@@ -101,11 +101,19 @@ public class WorryDiaryInfo
 [Serializable]
 public class PositiveThoughtsJournalInfo
 {
-    // Questions
-    public string Question_Situation;
+    public string People;
+    public string Food;
+    public string Place;
+    public string Events;
+    public string Hobbies;
+    public string CountYourBlessings;
 
-    // Answers
-    public string Answer_Situation;
+    public bool People_Check;
+    public bool Food_Check;
+    public bool Place_Check;
+    public bool Events_Check;
+    public bool Hobbies_Check;
+    public bool CountYourBlessings_Check;
 }
 
 [Serializable]

@@ -40,8 +40,13 @@ public class MoodCheckMenu : MonoBehaviour {
     // Prints out activities on screen
     public void PrintMood()
     {
+        for (int i = moodContent.transform.childCount - 1; i > 0; --i)
+        {
+            Destroy(moodContent.transform.GetChild(i).gameObject);
+        }
+
         // Check if the date is today
-        if(calendarUnit.dateTime.Date != DateTime.Today)
+        if (calendarUnit.dateTime.Date != DateTime.Today)
         {   // If not today, remove add mood button
             addMoodButton.SetActive(false);
         }
@@ -51,7 +56,7 @@ public class MoodCheckMenu : MonoBehaviour {
         }
 
         MoodCheckInfoComparer mciComparer = new MoodCheckInfoComparer();
-        _listOfMood = manager.GetComponent<EmotionsManager>().GetMoodCheck(calendarUnit.dateTime);
+        _listOfMood = manager.GetComponent<EmotionsManager>().GetMoodCheck(calendarUnit.dateTime.Date);
         _listOfMood.Sort(mciComparer);
 
         // Check if there are any mood entries
@@ -91,12 +96,8 @@ public class MoodCheckMenu : MonoBehaviour {
     // Starts the process of loading activities
     public void StartLoadActivities()
     {
-        manager.GetComponent<EmotionsManager>().LoadMood(calendarUnit.dateTime, SetCanLoadEmotions);
+        manager.GetComponent<EmotionsManager>().LoadMood(SetCanLoadEmotions);
 
-        for (int i = moodContent.transform.childCount - 1; i > 0; --i)
-        {
-            Destroy(moodContent.transform.GetChild(i).gameObject);
-        }
     }
 
     public void SetCanLoadEmotions(bool _checker)

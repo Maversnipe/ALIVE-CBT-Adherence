@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class AngerDiary : MonoBehaviour, IMoodCheckActivity_Generic
 {
     public DialogueNode dialogueNode;
+    public DialogueNode originalNode;
 
     public MoodCheckManager moodCheckManager;
     public Text question;
@@ -16,7 +17,6 @@ public class AngerDiary : MonoBehaviour, IMoodCheckActivity_Generic
     // Use this for initialization
     void Start()
     {
-
         // Setting up Anger Diary Info 
         _angerDiaryInfo = new AngerDiaryInfo();
 
@@ -69,6 +69,22 @@ public class AngerDiary : MonoBehaviour, IMoodCheckActivity_Generic
 
             // Set input text as active
             answerInput.gameObject.SetActive(true);
+
+            switch (dialogueNode.questionType)
+            {
+                case QuestionType.Situation:
+                    _angerDiaryInfo.Question_Situation = question.text;
+                    break;
+                case QuestionType.PhysicalSensations:
+                    _angerDiaryInfo.Question_PhysicalSensation = question.text;
+                    break;
+                case QuestionType.UnhelpfulThoughts:
+                    _angerDiaryInfo.Question_UnhelpfulThoughts[dialogueNode.index] = question.text;
+                    break;
+                case QuestionType.ChallengeThoughts:
+                    _angerDiaryInfo.Question_ChallengeThoughts[dialogueNode.index] = question.text;
+                    break;
+            }
         }
         else if (dialogueNode.dialogueType == DialogueNode.DialogueType.Response)
         {   // If the dialogue type is question 
@@ -187,6 +203,8 @@ public class AngerDiary : MonoBehaviour, IMoodCheckActivity_Generic
             moodCheckManager.OpenActivitySelection();
             // Remove the worry diary activity from activity selection
             moodCheckManager.activitySelection.GetComponent<ActivitySelection>().RemoveActivity(3);
+            // Reset 
+            Reset();
         }
         else
         {
@@ -280,6 +298,7 @@ public class AngerDiary : MonoBehaviour, IMoodCheckActivity_Generic
     {
         moodCheckManager.moodCheckInfo.angerDiaryInfo = _angerDiaryInfo;
         moodCheckManager.moodCheckInfo.angerDiaryActive = true;
+        Reset();
     }
 
     public void Reset()
